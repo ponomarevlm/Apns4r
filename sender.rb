@@ -30,7 +30,13 @@ module APNs4r
     end
 
     def self.send notification
-      @@ssl.write notification
+      begin
+        @@ssl.write notification
+      rescue => err
+        puts err
+        self.establishConnection
+        @@ssl.write notification
+      end
     end
 
     def self.closeConnection
