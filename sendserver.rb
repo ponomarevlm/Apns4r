@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'eventmachine'
+require 'base64'
 
 #add script's dir to require path
 $: << File.expand_path(File.dirname(__FILE__))
@@ -23,7 +24,7 @@ module SendServer
   def receive_data data
     # TODO store notifications for later batch transmission
     # only when some scaling needed
-    notification = Marshal.load data
+    notification = Marshal.load( Base64.decode64(data))
     APNs4r::Sender.send notification
     puts data
   end

@@ -25,7 +25,7 @@ class Hash
     to_json
   end
 
-  def payloadLength
+  def payload_length
     to_payload.length
   end
 
