@@ -6,9 +6,11 @@ module APNs4r
 
   class Sender
     @@ssl = nil
+    @@environment = nil
 
 
     def self.establishConnection environment
+      @@environment ||= environment
       return if @@ssl
       host = ( environment.to_sym == :sandbox ? 'gateway.sandbox.push.apple.com' : 'gateway.push.apple.com' )
       port = 2195
@@ -34,7 +36,7 @@ module APNs4r
         @@ssl.write notification
       rescue => err
         puts err
-        self.establishConnection
+        self.establishConnection @@environment
         @@ssl.write notification
       end
     end
