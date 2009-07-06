@@ -34,8 +34,7 @@ module APNs4r
     def self.send notification
       begin
         @@ssl.write notification
-      rescue => err
-        puts err
+      rescue OpenSSL::SSL::SSLError
         self.establishConnection @@environment
         @@ssl.write notification
       end
