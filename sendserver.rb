@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'rubygems'
 require 'eventmachine'
 require 'base64'
@@ -26,7 +27,7 @@ module SendServer
     # only when some scaling needed
     notification = Marshal.load( Base64.decode64(data))
     APNs4r::Sender.send notification
-    puts data
+    puts "#{Time.now.to_s} #{notification.payload}"
   end
 
   def unbind
