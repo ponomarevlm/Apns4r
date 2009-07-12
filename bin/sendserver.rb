@@ -4,7 +4,7 @@ require 'eventmachine'
 require 'base64'
 
 #add script's dir to require path
-$: << File.expand_path(File.dirname(__FILE__))
+$: << File.expand_path(File.dirname(__FILE__))+'/../lib/'
 require 'sender'
 require 'apncore'
 

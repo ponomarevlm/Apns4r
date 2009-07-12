@@ -14,8 +14,7 @@ module APNs4r
       return if @@ssl
       host = ( environment.to_sym == :sandbox ? 'gateway.sandbox.push.apple.com' : 'gateway.push.apple.com' )
       port = 2195
-      certdir   = File.expand_path(File.dirname(__FILE__))
-      certdir   = File.join(certdir, 'cert')
+      certdir   = File.expand_path(File.dirname(__FILE__))+'/../cert'
       cert_file = File.join(certdir , 'apns_developer_identity.cer')
       key_file  = File.join(certdir , 'apns_developer_private_key.pem')
 
