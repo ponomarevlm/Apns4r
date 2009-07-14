@@ -36,7 +36,11 @@ module SendServer
 end
 
 EventMachine::run {
-  puts "#{Time.now.to_s} SendServer started"
-  APNs4r::Sender.establishConnection :sandbox
-  $server = EventMachine::start_server "0.0.0.0", 8801, SendServer
+  if APNs4r::Sender.establishConnection :sandbox
+    puts "#{Time.now.to_s} SendServer started"
+    $server = EventMachine::start_server "0.0.0.0", 8801, SendServer
+  else
+    puts "#{Time.now.to_s} SendServer: failed to connect to APNs: timeout"
+    exit 1
+  end
 }

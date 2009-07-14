@@ -2,7 +2,7 @@ module APNs4r
 
   require 'socket'
   require 'openssl'
-
+  require 'timeout'
 
   class Sender
     @@ssl = nil
@@ -11,7 +11,7 @@ module APNs4r
 
     def self.establishConnection environment
       @@environment ||= environment
-      return if @@ssl
+      return true if @@ssl
       host = ( environment.to_sym == :sandbox ? 'gateway.sandbox.push.apple.com' : 'gateway.push.apple.com' )
       port = 2195
       certdir   = File.expand_path(File.dirname(__FILE__))+'/../cert'
@@ -25,9 +25,16 @@ module APNs4r
       end
 
       s = TCPSocket.new(host, port)
-      @@ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
-      @@ssl.connect # start SSL session
-      @@ssl.sync_close = true # close underlying socket on SSLSocket#close
+      begin
+        timeout(30) do
+          @@ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
+          @@ssl.connect # start SSL session
+          @@ssl.sync_close = true # close underlying socket on SSLSocket#close
+          return true
+        end
+      rescue TimeoutError
+        return false
+      end
     end
 
     def self.send notification
