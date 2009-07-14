@@ -14,11 +14,14 @@ class Hash
       self[:aps][:alert] = ''
       # can be chopped?
       if (to_json.length > MAX_PAYLOAD_LEN)
-        raise 'Payload data to long, nothing to cut'
+        return nil
       else
         self[:aps][:alert] = alert
         while (self.to_json.length > MAX_PAYLOAD_LEN)
-          self[:aps][:alert].chop!
+          # fuck da shit! Ruby 1.8.6 doesn't handle 'multibyte string'.chop! properly
+          arr = self[:aps][:alert].split('')
+          arr.pop
+          self[:aps][:alert] = arr*''
         end
       end
     end
