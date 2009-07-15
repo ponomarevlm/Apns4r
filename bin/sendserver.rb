@@ -9,12 +9,14 @@ require 'sender'
 require 'apncore'
 
 # properly close all connections and sokets
-Signal.trap("TERM") do
+def stop
   APNs4r::Sender.closeConnection
   EventMachine::stop_server $server
   puts "#{Time.now.to_s} SendServer stopped"
   exit
 end
+Signal.trap("TERM") {stop}
+Signal.trap("INT") {stop}
 
 
 module SendServer
