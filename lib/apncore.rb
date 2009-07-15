@@ -1,8 +1,9 @@
+$KCODE='u'
+require 'jcode'
 require 'rubygems'
 require 'json'
 
 require 'bit-struct' # take it at http://redshift.sourceforge.net/bit-struct/
-
 MAX_PAYLOAD_LEN = 256
 
 class Hash
@@ -18,10 +19,7 @@ class Hash
       else
         self[:aps][:alert] = alert
         while (self.to_json.length > MAX_PAYLOAD_LEN)
-          # fuck da shit! Ruby 1.8.6 doesn't handle 'multibyte string'.chop! properly
-          arr = self[:aps][:alert].split('')
-          arr.pop
-          self[:aps][:alert] = arr*''
+          self[:aps][:alert].chop!
         end
       end
     end
