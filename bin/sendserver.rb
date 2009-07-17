@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 #add script's dir to require path
-$: << File.expand_path(File.dirname(__FILE__))+'/../lib/'
-['rubygems', 'eventmachine', 'base64', 'sender', 'apncore', 'config'].each{|lib| require lib}
+$: << File.expand_path(File.dirname(__FILE__))+'/../'
+['rubygems', 'eventmachine', 'base64', 'lib/sender', 'lib/apncore', 'env/config'].each{|lib| require lib}
 
 # properly close all connections and sokets
 def stop
