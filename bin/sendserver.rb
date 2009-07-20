@@ -2,7 +2,7 @@
 
 #add script's dir to require path
 $: << File.expand_path(File.dirname(__FILE__))+'/../'
-['rubygems', 'eventmachine', 'base64', 'lib/sender', 'lib/apncore', 'env/config'].each{|lib| require lib}
+['rubygems', 'eventmachine', 'base64', 'logger', 'lib/sender', 'lib/apncore', 'env/config'].each{|lib| require lib}
 
 $logger = Logger.new("#{File.expand_path(File.dirname(__FILE__))}/../log/sendserver.log", 10, 1024000)
 # properly close all connections and sokets
@@ -26,7 +26,7 @@ module SendServer
     # only when some scaling needed
     notification = Marshal.load( Base64.decode64(data))
     APNs4r::Sender.send notification
-    $logger.info notification.payload}
+    $logger.info notification.payload
   end
 
   def unbind
