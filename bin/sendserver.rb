@@ -44,7 +44,7 @@ EventMachine::run {
       APNs4r::Sender.send notification
     end
     $logger.info "SendServer started"
-    $server = EventMachine::start_server OPTIONS[:sendserver_ip], OPTIONS[:sendserver_port], SendServer
+    $server = EventMachine::start_server OPTIONS[:sendserver_host], OPTIONS[:sendserver_port], SendServer
   else
     $logger.error "SendServer: failed to connect to APNs: timeout"
     exit 1
