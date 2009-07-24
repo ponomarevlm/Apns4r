@@ -35,17 +35,24 @@ end
 module APNs4r
 
   class Notification < BitStruct
-      # type      fieldname       size in bits  comment
-      unsigned    :command,       8,            "Command (constant?)"
-      unsigned    :token_length,   16,          "Token length(constant?)"
-      unsigned    :device_token,   256,         "Device token"
-      unsigned    :payload_length, 16,          "Payload length"
-      rest        :payload,                    "Body of message"
+    # type      fieldname       size in bits  comment
+    unsigned    :command,         8,    "Command (constant?)"
+    unsigned    :token_length,    16,   "Token length(constant?)"
+    unsigned    :device_token,    256,  "Device token"
+    unsigned    :payload_length,  16,   "Payload length"
+    rest        :payload,               "Body of message"
 
-      note "     rest is application defined payload body"
+    note "     rest is application defined payload body"
 
-      initial_value.command    = 0
-      initial_value.token_length  = 32
+    initial_value.command    = 0
+    initial_value.token_length  = 32
+  end
+
+  class FeedbackServiceResponce < BitStruct
+    unsigned :time,          32,   "unixtime"
+    unsigned :token_length,  16,   "Token length(constant?)"
+    unsigned :device_token,  256,  "Device token"
+    initial_value.token_length  = 32
   end
 
 end
