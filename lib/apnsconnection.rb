@@ -5,11 +5,16 @@ module APNs4r
   require 'timeout'
 
   class ApnsConnection
-    @@ssl = nil
-    @@environment = nil
+    
+    @@host,@@port = nil, nil
 
-    private
-    def self.connect(host,port)
+    def ApnsConnection.host; @@host; end
+    def ApnsConnection.port; @@port; end
+    def ApnsConnection.host=(x); @@host = x; end
+    def ApnsConnection.port=(x); @@port = x; end
+
+    protected
+    def self.connect
       certdir   = File.expand_path(File.dirname(__FILE__))+'/../cert'
       cert_file = File.join(certdir , 'apns_developer_identity.cer')
       key_file  = File.join(certdir , 'apns_developer_private_key.pem')
@@ -20,7 +25,7 @@ module APNs4r
         ctx.key  = OpenSSL::PKey::RSA.new(File::read(key_file))
       end
 
-      s = TCPSocket.new(host, port)
+      s = TCPSocket.new(@@host, @@port)
       begin
         timeout(30) do
           @@ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)

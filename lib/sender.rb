@@ -7,13 +7,14 @@ module APNs4r
   require 'apnsconnection'
 
   class Sender
+    @@host = gateway.sandbox.push.apple.com
+    @@port = 2195
 
     def self.establishConnection environment
       @@environment ||= environment
       return true if @@ssl
       host = ( environment.to_sym == :sandbox ? 'gateway.sandbox.push.apple.com' : 'gateway.push.apple.com' )
-      port = 2195
-      self.connect(host, port)
+      self.connect
     end
 
     def self.send notification
