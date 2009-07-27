@@ -15,7 +15,7 @@ module APNs4r
       @@environment = environment
       @@host = ( environment.to_sym == :sandbox ? 'feedback.sandbox.push.apple.com' : 'feedback.push.apple.com' )
       self.connect
-     
+
       #while responce = FeedbackServiceResponce.new(@@ssl.gets)
         #puts responce
       #end

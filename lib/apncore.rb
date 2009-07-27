@@ -46,6 +46,11 @@ module APNs4r
 
     initial_value.command    = 0
     initial_value.token_length  = 32
+
+    def Notification.create(token, p)
+      Notification.new :device_token => token, :payload_length => p.payload_length, :payload => p.to_payload
+    end
+
   end
 
   class FeedbackServiceResponce < BitStruct

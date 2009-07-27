@@ -7,7 +7,7 @@ module APNs4r
   require 'apnsconnection'
 
   class Sender
-    @@host = gateway.sandbox.push.apple.com
+    @@host = 'gateway.sandbox.push.apple.com'
     @@port = 2195
 
     def self.establishConnection environment

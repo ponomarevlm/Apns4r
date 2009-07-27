@@ -5,7 +5,7 @@ module APNs4r
   require 'timeout'
 
   class ApnsConnection
-    
+
     @@host,@@port = nil, nil
 
     def ApnsConnection.host; @@host; end
