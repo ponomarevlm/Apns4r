@@ -8,12 +8,11 @@ module APNs4r
   require 'apncore'
 
   class FeedbackReader < ApnsConnection
-    @@host = 'feedback.sandbox.push.apple.com'
-    @@port = 2196
 
     def self.read environment
       @@environment = environment
-      @@host = ( environment.to_sym == :sandbox ? 'feedback.sandbox.push.apple.com' : 'feedback.push.apple.com' )
+      @@host ||= ( environment.to_sym == :sandbox ? 'feedback.sandbox.push.apple.com' : 'feedback.push.apple.com' )
+      @@port ||= 2196
       self.connect
 
       #while responce = FeedbackServiceResponce.new(@@ssl.gets)
