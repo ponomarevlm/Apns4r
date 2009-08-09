@@ -1,5 +1,4 @@
-$KCODE='u'
-require 'jcode'
+$KCODE='u' and require 'jcode' if RUBY_VERSION =~ /1.8/
 require 'rubygems'
 require 'json'
 
@@ -44,11 +43,8 @@ module APNs4r
 
     note "     rest is application defined payload body"
 
-    initial_value.command    = 0
-    initial_value.token_length  = 32
-
     def Notification.create(token, p)
-      Notification.new :device_token => token, :payload_length => p.payload_length, :payload => p.to_payload
+      Notification.new :device_token => token, :payload_length => p.payload_length, :payload => p.to_payload, :command => 0, :token_length => 32
     end
 
   end
