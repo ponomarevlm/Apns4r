@@ -1,8 +1,7 @@
 module APNs4r
 
-  $: << File.expand_path(File.dirname(__FILE__))
-  require 'apnsconnection'
-  require 'apncore'
+  require './apnsconnection'
+  require './apncore'
 
   class FeedbackReader < ApnsConnection
 

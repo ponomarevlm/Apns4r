@@ -2,7 +2,8 @@
 
 #add script's dir to require path
 $: << File.expand_path(File.dirname(__FILE__))+'/../'
-['rubygems', 'eventmachine', 'base64', 'logger', 'lib/sender', 'lib/apncore', 'env/config'].each{|lib| require lib}
+['rubygems', 'eventmachine', 'base64', 'logger', 'lib/sender', 'lib/apncore'].each{|lib| require lib}
+require 'env/config' unless defined? OPTIONS
 
 $logger = Logger.new("#{File.expand_path(File.dirname(__FILE__))}/../log/sendserver.log", 10, 1024000)
 # properly close all connections and sokets
@@ -40,11 +41,11 @@ EventMachine::run {
     EventMachine::add_periodic_timer( 300 ) do
       p = { :ping => Time.now.to_i.to_s }
       notification = APNs4r::Notification.new :payload => p.to_payload , \
-        :payload_length => p.payload_length, :device_token => OPTIONS[:ping_device_token]
+        :payload_length => p.payload_length, :device_token => OPTIONS[:apns4r_ping_device_token]
       APNs4r::Sender.send notification
     end
     $logger.info "SendServer started"
-    $server = EventMachine::start_server OPTIONS[:sendserver_host], OPTIONS[:sendserver_port], SendServer
+    $server = EventMachine::start_server OPTIONS[:apns4r_sendserver_host], OPTIONS[:apns4r_sendserver_port], SendServer
   else
     $logger.error "SendServer: failed to connect to APNs: timeout"
     exit 1

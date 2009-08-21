@@ -3,6 +3,8 @@ module APNs4r
   require 'socket'
   require 'openssl'
 
+  $: << File.expand_path(File.dirname(__FILE__))+'/../' and require 'env/config' unless defined? OPTIONS
+
   class ApnsConnection
 
     @@host,@@port = nil, nil
@@ -14,15 +16,9 @@ module APNs4r
 
     protected
     def self.connect
-      certdir   = File.expand_path(File.dirname(__FILE__))+'/../cert'
-      cert_file = File.join(certdir , 'apns_developer_identity.cer')
-      key_file  = File.join(certdir , 'apns_developer_private_key.pem')
-
       ctx = OpenSSL::SSL::SSLContext.new()
-      if cert_file && key_file
-        ctx.cert = OpenSSL::X509::Certificate.new(File::read(cert_file))
-        ctx.key  = OpenSSL::PKey::RSA.new(File::read(key_file))
-      end
+      ctx.cert = OpenSSL::X509::Certificate.new(File::read(OPTIONS[:apns4r_cert_file]))
+      ctx.key  = OpenSSL::PKey::RSA.new(File::read(OPTIONS[:apns4r_cert_key]))
 
       begin
         s = TCPSocket.new(@@host, @@port)

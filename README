@@ -1,5 +1,5 @@
 This lib is intended to allow write my own APNs provider for Apple Push
-Notificaion servises (APNs) in ruby.  Requires json gem and bit-struct
+Notificaion services (APNs) in ruby.  Requires json gem and bit-struct
 ( take it at http://redshift.sourceforge.net/bit-struct/ ).
 
 But if you want to use APNs sertificates with ruby (ie with OpenSSL),
