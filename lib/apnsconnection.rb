@@ -2,7 +2,6 @@ module APNs4r
 
   require 'socket'
   require 'openssl'
-  require 'timeout'
 
   class ApnsConnection
 
@@ -25,16 +24,14 @@ module APNs4r
         ctx.key  = OpenSSL::PKey::RSA.new(File::read(key_file))
       end
 
-      s = TCPSocket.new(@@host, @@port)
       begin
-        timeout(30) do
-          @@ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
-          @@ssl.connect # start SSL session
-          @@ssl.sync_close = true # close underlying socket on SSLSocket#close
-          return true
-        end
-      rescue TimeoutError
-        return false
+        s = TCPSocket.new(@@host, @@port)
+        @@ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
+        @@ssl.connect # start SSL session
+        @@ssl.sync_close = true # close underlying socket on SSLSocket#close
+        return true
+      rescue Errno::ETIMEDOUT
+        retry
       end
     end
 
