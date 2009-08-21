@@ -1,8 +1,5 @@
 module APNs4r
 
-  require 'socket'
-  require 'openssl'
-  require 'timeout'
   $: << File.expand_path(File.dirname(__FILE__))
   require 'apnsconnection'
   require 'apncore'
@@ -10,22 +7,21 @@ module APNs4r
   class FeedbackReader < ApnsConnection
 
     def self.read environment
-      @@environment = environment
-      @@host ||= ( environment.to_sym == :sandbox ? 'feedback.sandbox.push.apple.com' : 'feedback.push.apple.com' )
-      @@port ||= 2196
-      self.connect
+      unless defined? @@ssl
+        @@environment = environment
+        @@host ||= ( environment.to_sym == :sandbox ? 'feedback.sandbox.push.apple.com' : 'feedback.push.apple.com' )
+        @@port ||= 2196
+        self.connect
+      end
 
-      #while responce = FeedbackServiceResponce.new(@@ssl.gets)
-        #puts responce
-      #end
-      while s = @@ssl.gets
-        puts s
+      records ||= []
+      while record = @@ssl.read(38)
+        records << record.unpack('NnH*')
       end
       @@ssl.close
+      records
     end
 
   end
 
 end
-
-APNs4r::FeedbackReader.read :sandbox
