@@ -16,7 +16,7 @@ module APNs4r
       return true if @@ssl
     end
 
-    def self.send notification
+    def self.push notification
       begin
         @@ssl.write notification
       rescue OpenSSL::SSL::SSLError, Errno::EPIPE

@@ -44,7 +44,7 @@ module APNs4r
     note "     rest is application defined payload body"
 
     def Notification.create(token, p)
-      Notification.new :device_token => token, :payload_length => p.payload_length, :payload => p.to_payload, :command => 0, :token_length => 32
+      Notification.new :device_token => token.kind_of?(String) ? token.delete(' ').hex : token, :payload_length => p.payload_length, :payload => p.to_payload, :command => 0, :token_length => 32
     end
 
   end
