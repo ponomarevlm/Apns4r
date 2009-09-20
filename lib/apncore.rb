@@ -37,7 +37,7 @@ module APNs4r
     attr_accessor :token, :payload
 
     def initialize token, payload
-      @token, @payload = token, payload.to_payload
+      @token, @payload = token, payload.kind_of? Hash ? payload.to_payload : payload
     end
 
     def Notification.create(token, payload)
@@ -46,6 +46,11 @@ module APNs4r
 
     def to_s
       [0, 32, @token, @payload.length, @payload ].pack("CnH*na*")
+    end
+
+    def Notification.parse bitstring
+      command, tokenlen, token, payloadlen, payload = bitstring.unpack("CnH64na*")
+      Notification.new(token, payload)
     end
 
   end
