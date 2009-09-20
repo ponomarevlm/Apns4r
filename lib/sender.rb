@@ -8,7 +8,7 @@ module APNs4r
 
   class Sender < ApnsConnection
 
-    def self.establishConnection environment
+    def self.establish_connection environment
       @@environment ||= environment
       @@host ||= ( environment.to_sym == :sandbox ? 'gateway.sandbox.push.apple.com' : 'gateway.push.apple.com' )
       @@port ||= 2195
@@ -20,12 +20,12 @@ module APNs4r
       begin
         @@ssl.write notification
       rescue OpenSSL::SSL::SSLError, Errno::EPIPE
-        self.establishConnection @@environment
+        self.establish_connection @@environment
         @@ssl.write notification
       end
     end
 
-    def self.closeConnection
+    def self.close_connection
       @@ssl.close
       @@ssl = nil
     end

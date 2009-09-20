@@ -2,13 +2,13 @@
 
 #add script's dir to require path
 $: << File.expand_path(File.dirname(__FILE__))+'/../'
-['rubygems', 'eventmachine', 'base64', 'logger', 'lib/sender', 'lib/apncore'].each{|lib| require lib}
+['rubygems', 'eventmachine', 'logger', 'lib/sender', 'lib/apncore'].each{|lib| require lib}
 require 'env/config' unless defined? OPTIONS
 
 $logger = Logger.new("#{File.expand_path(File.dirname(__FILE__))}/../log/sendserver.log", 10, 1024000)
 # properly close all connections and sokets
 def stop
-  APNs4r::Sender.closeConnection
+  APNs4r::Sender.close_connection
   EventMachine::stop_server $server
   $logger.info "SendServer stopped"
   exit
@@ -25,9 +25,9 @@ module SendServer
   def receive_data data
     # TODO store notifications for later batch transmission
     # only when some scaling needed
-    notification = Marshal.load( Base64.decode64(data))
-    APNs4r::Sender.send notification
-    $logger.info notification.payload
+    data = data.chomp
+    APNs4r::Sender.push data
+    $logger.info Notification.parse(data).payload
   end
 
   def unbind
@@ -36,13 +36,12 @@ module SendServer
 end
 
 EventMachine::run {
-  if APNs4r::Sender.establishConnection :sandbox
+  if APNs4r::Sender.establish_connection :sandbox
     # pinging our device to avoid socket close by APNs
     EventMachine::add_periodic_timer( 300 ) do
-      p = { :ping => Time.now.to_i.to_s }
-      notification = APNs4r::Notification.new :payload => p.to_payload , \
-        :payload_length => p.payload_length, :device_token => OPTIONS[:apns4r_ping_device_token]
-      APNs4r::Sender.send notification
+      payload = { :ping => Time.now.to_i.to_s }
+      notification = APNs4r::Notification.create OPTIONS[:apns4r_ping_device_token], payload
+      APNs4r::Sender.push notification
     end
     $logger.info "SendServer started"
     $server = EventMachine::start_server OPTIONS[:apns4r_sendserver_host], OPTIONS[:apns4r_sendserver_port], SendServer

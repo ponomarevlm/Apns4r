@@ -37,11 +37,11 @@ module APNs4r
     attr_accessor :token, :payload
 
     def initialize token, payload
-      @token, @payload = token, payload.kind_of? Hash ? payload.to_payload : payload
+      @token, @payload = token, payload
     end
 
     def Notification.create(token, payload)
-      Notification.new token.kind_of?(String) ? token.delete(' ') : token.to_s(16) ,payload
+      Notification.new token.kind_of?(String) ? token.delete(' ') : token.to_s(16) , payload.kind_of? Hash ? payload.to_payload : payload
     end
 
     def to_s
