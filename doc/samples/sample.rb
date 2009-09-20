@@ -6,12 +6,11 @@ $: << File.expand_path(File.dirname(__FILE__))+'/../../lib/'
 require 'apncore'
 require 'sender'
 
-p = { :aps => {:alert => "Hey, dude!"}, :data => "asd" }
+payload = { :aps => {:alert => "Hey, dude!", :badge => 1}, :custom_data => "asd" }
 
-notification = APNs4r::Notification.create ARGV.shift.hex, p
-# token is something like "e754daa9 XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX".delete(' ').hex
+# token is something like "e754daa9 XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX"
+notification = APNs4r::Notification.create ARGV.shift, payload
 
 APNs4r::Sender.establishConnection :sandbox
-APNs4r::Sender.send notification
+APNs4r::Sender.push notification
 APNs4r::Sender.closeConnection
-

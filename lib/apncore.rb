@@ -2,7 +2,6 @@ $KCODE='u' and require 'jcode' if RUBY_VERSION =~ /1.8/
 require 'rubygems'
 require 'json'
 
-require 'bit-struct' # take it at http://redshift.sourceforge.net/bit-struct/
 MAX_PAYLOAD_LEN = 256
 
 class Hash
@@ -15,7 +14,7 @@ class Hash
       # can be chopped?
       if (to_json.length > MAX_PAYLOAD_LEN)
         return nil
-      else
+      else # inefficient way, but payload may be full of unicode-escaped chars, so...
         self[:aps][:alert] = alert
         while (self.to_json.length > MAX_PAYLOAD_LEN)
           self[:aps][:alert].chop!
@@ -33,27 +32,32 @@ end
 
 module APNs4r
 
-  class Notification < BitStruct
-    # type      fieldname       size in bits  comment
-    unsigned    :command,         8,    "Command (constant?)"
-    unsigned    :token_length,    16,   "Token length(constant?)"
-    unsigned    :device_token,    256,  "Device token"
-    unsigned    :payload_length,  16,   "Payload length"
-    rest        :payload,               "Body of message"
+  class Notification
 
-    note "     rest is application defined payload body"
+    attr_accessor :token, :payload
 
-    def Notification.create(token, p)
-      Notification.new :device_token => token.kind_of?(String) ? token.delete(' ').hex : token, :payload_length => p.payload_length, :payload => p.to_payload, :command => 0, :token_length => 32
+    def initialize token, payload
+      @token, @payload = token, payload.to_payload
+    end
+
+    def Notification.create(token, payload)
+      Notification.new token.kind_of?(String) ? token.delete(' ') : token.to_s(16) ,payload
+    end
+
+    def to_s
+      [0, 32, @token, @payload.length, @payload ].pack("CnH*na*")
     end
 
   end
 
-  class FeedbackServiceResponce < BitStruct
-    unsigned :time,          32,   "unixtime"
-    unsigned :token_length,  16,   "Token length(constant?)"
-    unsigned :device_token,  256,  "Device token"
-    initial_value.token_length  = 32
+  class FeedbackServiceResponce
+
+    attr_accessor :timestamp, :token
+
+    def initialize bitstring
+      @timestamp, tokenlen, @token = *bitstring.unpack('NnH*')
+    end
+
   end
 
 end
