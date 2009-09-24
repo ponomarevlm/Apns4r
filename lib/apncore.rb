@@ -41,7 +41,7 @@ module APNs4r
     end
 
     def Notification.create(token, payload)
-      Notification.new token.kind_of?(String) ? token.delete(' ') : token.to_s(16) , payload.kind_of? Hash ? payload.to_payload : payload
+      Notification.new token.kind_of?(String) ? token.delete(' ') : token.to_s(16) , payload.kind_of?(Hash) ? payload.to_payload : payload
     end
 
     def to_s
