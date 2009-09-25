@@ -18,10 +18,10 @@ module APNs4r
 
     def self.push notification
       begin
-        @@ssl.write notification
+        @@ssl.write notification.to_s
       rescue OpenSSL::SSL::SSLError, Errno::EPIPE
         self.establish_connection @@environment
-        @@ssl.write notification
+        @@ssl.write notification.to_s
       end
     end
 
