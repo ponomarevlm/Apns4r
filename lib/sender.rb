@@ -1,33 +1,35 @@
 module APNs4r
 
-  require 'socket'
-  require 'openssl'
-  require 'timeout'
-  $: << File.expand_path(File.dirname(__FILE__))
-  require 'apnsconnection'
-
   class Sender < ApnsConnection
 
-    def self.establish_connection environment
-      @@environment ||= environment
-      @@host ||= ( environment.to_sym == :sandbox ? 'gateway.sandbox.push.apple.com' : 'gateway.push.apple.com' )
-      @@port ||= 2195
-      self.connect
-      return true if @@ssl
+    attr_accessor :host, :port
+
+    # Creates new {Sender} object with given host and port
+    # @param [String] host default to APNs sandbox
+    # @param [Fixnum] port don't think it can change, just in case
+    def initialize host = OPTIONS[:apns4r_push_host], port = OPTIONS[:apns4r_push_port]
+      @host, @port = host, port
+      @ssl ||= connect(@host, @port)
+      self
     end
 
-    def self.push notification
+    # sends {Notification} object to Apple's server
+    # @param [Notification] notification notification to send
+    # @example
+    # n = APNs4r::Notification.create 'e754dXXXX...', { :aps => {:alert => "Hey, dude!", :badge => 1}, :custom_data => "asd" }
+    # sender = APNs4r::Sender.new.push n
+    def push notification
       begin
-        @@ssl.write notification.to_s
+        @ssl.write notification.to_s
       rescue OpenSSL::SSL::SSLError, Errno::EPIPE
-        self.establish_connection @@environment
-        @@ssl.write notification.to_s
+        @ssl ||= connect(@host, @port)
+        retry
       end
     end
 
-    def self.close_connection
-      @@ssl.close
-      @@ssl = nil
+    def close_connection
+      @ssl.close
+      @ssl = nil
     end
 
   end

@@ -2,8 +2,7 @@
 
 #add script's dir to require path
 $: << File.expand_path(File.dirname(__FILE__))+'/../'
-['rubygems', 'eventmachine', 'logger', 'lib/sender', 'lib/apncore'].each{|lib| require lib}
-require 'env/config' unless defined? OPTIONS
+['eventmachine', 'logger', 'lib/apns4r'].each{|lib| require lib}
 
 $logger = Logger.new("#{File.expand_path(File.dirname(__FILE__))}/../log/sendserver.log", 10, 1024000)
 # properly close all connections and sokets
@@ -20,13 +19,14 @@ Signal.trap("INT") {stop}
 module SendServer
   def post_init
     $logger.info "Incoming connection"
+    @sender = APNs4r::Sender.new
   end
 
   def receive_data data
     # TODO store notifications for later batch transmission
     # only when some scaling needed
     data = data.chomp
-    APNs4r::Sender.push data
+    @sender.push data
     $logger.info Notification.parse(data).payload
   end
 

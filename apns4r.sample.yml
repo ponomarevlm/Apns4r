@@ -1,0 +1,10 @@
+apns4r_cert_file: <%= File.dirname(__FILE__) + '/cert/apns_developer_identity.cer' %>
+apns4r_cert_key: <%= File.dirname(__FILE__) + '/cert/apns_developer_private_key.pem' %>
+apns4r_push_host: 'gateway.sandbox.push.apple.com' # or 'gateway.push.apple.com' when you ready
+apns4r_push_port: 2195
+apns4r_feedback_host: 'feedback.sandbox.push.apple.com' # 'feedback.push.apple.com'
+apns4r_feedback_port: 2196
+
+apns4r_ping_device_token: <%= "0000000000000000000000000000000000000000000000000000000000000000".hex %>
+apns4r_sendserver_host: 'localhost'
+apns4r_sendserver_port: 8801
