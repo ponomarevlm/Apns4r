@@ -31,7 +31,7 @@ class Hash
   # @return [Fixnum, nil] length of object converted into JSON or nil.
   def payload_length
     p = to_payload
-    p ? : p.length : nil
+    p ? p.length : nil
   end
 
 end
