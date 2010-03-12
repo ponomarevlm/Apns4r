@@ -19,11 +19,14 @@ module APNs4r
     # n = APNs4r::Notification.create 'e754dXXXX...', { :aps => {:alert => "Hey, dude!", :badge => 1}, :custom_data => "asd" }
     # sender = APNs4r::Sender.new.push n
     def push notification
+      delay = 2
       begin
         @ssl.write notification.to_s
       rescue OpenSSL::SSL::SSLError, Errno::EPIPE
-        @ssl ||= connect(@host, @port)
-        retry
+        sleep delay
+        @ssl = connect(@host, @port)
+        delay*=2 and retry if delay < 60
+        raise Timeout::Error
       end
     end
 
