@@ -7,9 +7,20 @@ module APNs4r
     # Creates new {Sender} object with given host and port
     # @param [String] host default to APNs sandbox
     # @param [Fixnum] port don't think it can change, just in case
-    def initialize host = OPTIONS[:apns4r_push_host], port = OPTIONS[:apns4r_push_port]
-      @host, @port = host, port
-      @ssl ||= connect(@host, @port)
+    def initialize *args
+      
+      if args[0].is_a? Hash
+        options = args[0]
+        @host = options.delete(:host) || OPTIONS[:apns4r_push_host]
+        @port = options.delete(:port) || OPTIONS[:apns4r_push_port]
+        
+        @ssl ||= connect(@host, @port, options)
+      else
+        @host = args[0] || OPTIONS[:apns4r_push_host]
+        @port = args[1] || OPTIONS[:apns4r_push_port]
+
+        @ssl ||= connect(@host, @port)
+      end
       self
     end
 
