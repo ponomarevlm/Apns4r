@@ -5,8 +5,16 @@ module APNs4r
     attr_accessor :host, :port
 
     # Creates new {Sender} object with given host and port
+    # 
+    # Accepts params in 2 ways, either as 2 strings :
     # @param [String] host default to APNs sandbox
     # @param [Fixnum] port don't think it can change, just in case
+    #
+    # or as a Hash of optional arguments:
+    # :host => [String] host default to APNs sandbox
+    # :port => [Fixnum] port don't think it can change, just in case
+    # :apns4r_cert_file => [String] path to cert file (used to support multiple iphone applications from one server) 
+    # :apns4r_cert_key => [String] path to cert key (as above)
     def initialize *args
       
       if args[0].is_a? Hash
