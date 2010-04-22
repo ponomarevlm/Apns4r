@@ -1,7 +1,7 @@
 # /config/application.yml
 defaults: &defaults
-  apns4r_cert_file: <%= RAILS_ROOT + "/cert/apns_#{RAILS_ENV}_identity.cer" %>
-  apns4r_cert_key: <%= RAILS_ROOT + "/cert/apns_#{RAILS_ENV}_private_key.pem" %>
+  apns4r_cert_file: <%= Rails.root.join("cert", "apns_#{Rails.env}_identity.cer") %>
+  apns4r_cert_key: <%= Rails.root.join("cert", "apns_#{Rails.env}_private_key.pem") %>
   apns4r_push_host: 'gateway.sandbox.push.apple.com'
   apns4r_push_port: 2195
   apns4r_feedback_host: 'feedback.sandbox.push.apple.com'
